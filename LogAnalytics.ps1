@@ -2,37 +2,13 @@
 $CustomerId = "95603f05-cda8-430b-aa97-45fb3ad20395"  
 
 # Replace with your Primary Key
-$SharedKey = "MzD3C7M6u/eXOe4OqigS2Aw+xPjJ9SWe1xKx1Iddkx4uQRZ+MosNGwWA6D6fcDgjfGZJ6Q/bH6sjf28n+93j+A=="
+$SharedKey = $env:SharedKey
 
 # Specify the name of the record type that you'll be creating
 $LogType = "AdamRecordType"
 
-# Specify a field with the created time for the records
-$TimeStampField = get-date -Format FileDateTimeUniversal
-
-$r = irm "https://mcapi.us/server/status?ip=$env:ip&port=25565"
-$max = $r.players.max
-$now = $r.players.now
-
-# Create two records with the same set of properties to create
-$json = @"
-[{  "StringValue": "Players max",
-    "NumberValue": $max,
-    "BooleanValue": true,
-    "DateValue": "$TimeStampField",
-    "GUIDValue": "9909ED01-A74C-4874-8ABF-D2678E3AE23D"
-},
-{   "StringValue": "Players now",
-    "NumberValue": $now,
-    "BooleanValue": false,
-    "DateValue": "$TimeStampField",
-    "GUIDValue": "8809ED01-A74C-4874-8ABF-D2678E3AE23D"
-}]
-"@
-
 # Create the function to create the authorization signature
-Function Build-Signature ($customerId, $sharedKey, $date, $contentLength, $method, $contentType, $resource)
-{
+Function Build-Signature ($customerId, $sharedKey, $date, $contentLength, $method, $contentType, $resource) {
     $xHeaders = "x-ms-date:" + $date
     $stringToHash = $method + "`n" + $contentLength + "`n" + $contentType + "`n" + $xHeaders + "`n" + $resource
 
@@ -43,14 +19,13 @@ Function Build-Signature ($customerId, $sharedKey, $date, $contentLength, $metho
     $sha256.Key = $keyBytes
     $calculatedHash = $sha256.ComputeHash($bytesToHash)
     $encodedHash = [Convert]::ToBase64String($calculatedHash)
-    $authorization = 'SharedKey {0}:{1}' -f $customerId,$encodedHash
+    $authorization = 'SharedKey {0}:{1}' -f $customerId, $encodedHash
     return $authorization
 }
 
 
 # Create the function to create and post the request
-Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType)
-{
+Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType, $TimeStampField) {
     $method = "POST"
     $contentType = "application/json"
     $resource = "/api/logs"
@@ -68,9 +43,9 @@ Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType)
     $uri = "https://" + $customerId + ".ods.opinsights.azure.com" + $resource + "?api-version=2016-04-01"
 
     $headers = @{
-        "Authorization" = $signature;
-        "Log-Type" = $logType;
-        "x-ms-date" = $rfc1123date;
+        "Authorization"        = $signature;
+        "Log-Type"             = $logType;
+        "x-ms-date"            = $rfc1123date;
         "time-generated-field" = $TimeStampField;
     }
 
@@ -79,5 +54,23 @@ Function Post-LogAnalyticsData($customerId, $sharedKey, $body, $logType)
 
 }
 
-# Submit the data to the API endpoint
-Post-LogAnalyticsData -customerId $customerId -sharedKey $sharedKey -body ([System.Text.Encoding]::UTF8.GetBytes($json)) -logType $logType
+while ($true) {
+    $timeStampField = get-date -Format o
+
+    $r = irm "https://mcapi.us/server/status?ip=$env:ip&port=25565"
+    $max = $r.players.max
+    $now = $r.players.now
+    
+    # Create two records with the same set of properties to create
+    $json = @"
+    [{  "Players max": $max,
+        "Players now": $now
+    }]
+"@
+    
+    # Submit the data to the API endpoint
+    Post-LogAnalyticsData -customerId $customerId -sharedKey $sharedKey -body ([System.Text.Encoding]::UTF8.GetBytes($json)) -logType $logType -TimeStampField $timeStampField
+
+    Start-Sleep -Seconds 10
+}
+# Specify a field with the created time for the records
