@@ -1,0 +1,5 @@
+MinecraftMonitoring_CL
+| where Name_s == "Player count"
+| sort by TimeGenerated desc
+| summarize max(Now_d) by bin(TimeGenerated, 1m), Now_d, Max_d
+| render timechart  
