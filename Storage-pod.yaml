@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hack9-manage-disk
+spec:
+  containers:
+    - name: minecraft
+      image: openhack/minecraft-server
+      volumeMounts:
+      - mountPath: "/mnt/azure"
+        name: volume
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+        claimName: hack9-managed-disk
