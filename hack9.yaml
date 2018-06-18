@@ -58,3 +58,26 @@ spec:
   selector:
     app: minecraft
 ---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: prometheus-sidecar
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prom-sidecar
+    spec:
+      containers:
+        - name: prom-sidecar
+          image: openhack/minecraft-server
+          ports:
+          - containerPort: 25565
+            name: minecraft
+          - containerPort: 25575
+            name: rcon
+          env:
+          - name: EULA
+            value: "TRUE"
+        
