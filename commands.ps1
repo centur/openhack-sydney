@@ -26,3 +26,20 @@ kubectl get pods --all-namespaces
 kubectl get configmaps myconfigmap
 kubectl get pods
 kubectl describe pod
+
+
+
+#challenge 4 
+
+kubectl config view # gives url to access api programatically
+kubectl get secrets | kubectl describe secret
+
+
+choco install kubernetes-helm
+helm init --client-only
+helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
+helm repo add azure https://kubernetescharts.blob.core.windows.net/azure
+helm repo add brigade https://azure.github.io/brigade
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+
+
