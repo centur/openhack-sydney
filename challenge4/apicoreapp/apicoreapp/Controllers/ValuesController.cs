@@ -59,10 +59,7 @@ namespace apicoreapp.Controllers
                     
 
                     tenant.Name = service.Metadata.Name;
-                    tenant.Endpoints = new List<Endpoint>
-                    {
-                        new Endpoint{ Minecraft = $"{svcExtIp}:{svcPort}", Rcon = $"{svcExtIp}:{rcPort}" }
-                    };
+                    tenant.Endpoints = new Endpoint { Minecraft = $"{svcExtIp}:{svcPort}", Rcon = $"{svcExtIp}:{rcPort}" };
 
                     tenants.Add(tenant);
                 }
