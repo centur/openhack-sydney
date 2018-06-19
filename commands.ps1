@@ -17,3 +17,8 @@ kubectl config get-contexts
 
 
 docker pull mcr.microsoft.com/powershell - powershell core
+
+
+kubectl get configmaps myconfigmap
+kubectl get pods
+kubectl describe pod
