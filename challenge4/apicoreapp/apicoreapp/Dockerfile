@@ -5,6 +5,7 @@ EXPOSE 44324
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
+COPY apicoreapp/config /app/config
 COPY apicoreapp/apicoreapp.csproj apicoreapp/
 RUN dotnet restore apicoreapp/apicoreapp.csproj
 COPY . .
