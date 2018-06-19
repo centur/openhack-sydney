@@ -1,4 +1,4 @@
-﻿namespace apicoreapp.Model
+﻿namespace apicoreapp.Models
 {
     public class Endpoint
     {
