@@ -5,13 +5,19 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: openhack/minecraft-server
+  tag: "2.0"
+  pullPolicy: IfNotPresent
+
+sideCar:
+  repository: timh777/hack9-mcmon
+  tag: "v1"
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  port: 25565
+  adminPort: 25575
 
 ingress:
   enabled: false

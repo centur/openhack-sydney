@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using apicoreapp.Models;
+using k8s;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -30,7 +31,21 @@ namespace apicoreapp.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile("/app/config");
+
+            IKubernetes client = new Kubernetes(config);
+
+            var list = client.ListNamespacedPod("default");
+            var returnString = $"Pods{Environment.NewLine}";
+            foreach (var item in list.Items)
+            {
+                returnString += $"{item.Metadata.Name}{Environment.NewLine}";
+            }
+            if (list.Items.Count == 0)
+            {
+                Console.WriteLine("Empty!");
+            }
+            return returnString;
         }
 
         // POST api/values

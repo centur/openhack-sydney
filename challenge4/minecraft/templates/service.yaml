@@ -10,10 +10,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - name: minecraft
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.port }}
+  - name: rcon
+    port: {{ .Values.service.adminPort }}
+    targetPort: {{ .Values.service.adminPort }}
   selector:
     app: {{ template "minecraft.name" . }}
     release: {{ .Release.Name }}
