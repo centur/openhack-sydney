@@ -7,5 +7,5 @@ metadata:
 data:
   ServerIp: "13.70.127.199"
   ServerPort: "25565"
-  WorkspaceId: 95603f05-cda8-430b-aa97-45fb3ad20395
-  Message: Via Monitoring Sidecar
+  WorkspaceId: "95603f05-cda8-430b-aa97-45fb3ad20395"
+  Message: "Via Monitoring Sidecar"

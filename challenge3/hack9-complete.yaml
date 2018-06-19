@@ -53,7 +53,7 @@ spec:
               name: myconfigmap
               key: WorkspaceId
         - name: ServerPort
-          value: 25565
+          value: "25565"
         - name: OmsSecret
           valueFrom:
             secretKeyRef:
