@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+  labels:
+    app: minecraft
+data:
+  ServerIp: "13.70.127.199"
+  ServerPort: "25565"
+  WorkspaceId: 95603f05-cda8-430b-aa97-45fb3ad20395
+  Message: Via Monitoring Sidecar
