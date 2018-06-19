@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secrets
+type: Opaque
+data:
+  omssecret2: "dHJ3bVh0Vy9NMUloM0xEaCtiMUdjWG5hT0pUcTlLMzRHdHRUejQ1dXhPMzZkQ3kzS1Bka0g1WDhpdVV4eTNMck9OeCtWaXpmWHovZnowRHFmdkMwUUE9PQ=="
