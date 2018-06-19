@@ -5,6 +5,6 @@ namespace apicoreapp.Models
     public class Tenant
     {
         public string Name { get; set; }
-        public Endpoint Endpoints{ get; set; }    
+        public Endpoint Endpoint{ get; set; }    
     }
 }

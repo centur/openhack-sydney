@@ -56,9 +56,8 @@ namespace apicoreapp.Logic
                 tenantList.Add(new Tenant()
                 {
                     Name = name.ToString(),
-                    Endpoints = new []{
-                        new Endpoint(){ Minecraft = $"{ip}:{port}", Rcon = $"{ip}:{port}" } }
-                });
+                    Endpoint = new Endpoint() { Minecraft = $"{ip}:{port}", Rcon = $"{ip}:{port}" }}
+                );
             }
 
             return Task.FromResult(tenantList.AsEnumerable());
