@@ -59,7 +59,6 @@ spec:
   selector:
     app: minecraft
 ---
-
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -73,8 +72,12 @@ spec:
     spec:
       containers:
       - name: mcmon
-        image: hack9-mcmon:v1
-        imagePullPolicy: Never
+        image: timh777/hack9-mcmon:v1
         env:
         - name: Message
           value: "Kube deployed"
+        - name: OmsSecret
+          valueFrom:
+            secretKeyRef:
+              name: Secrets
+              key: omsSecret
