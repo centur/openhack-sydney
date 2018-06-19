@@ -1,0 +1,69 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "minecraft.fullname" . }}
+  labels:
+    app: {{ template "minecraft.name" . }}
+    chart: {{ template "minecraft.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "minecraft.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "minecraft.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: 25565
+            name: minecraft
+          - containerPort: 25575
+            name: rcon
+          env:
+          - name: EULA
+            value: "TRUE"
+          volumeMounts:
+          - mountPath: "/data"
+            name: volume
+        - name: "{{ .Release.Name }}-monitoring"
+          image: "{{ .Values.sideCar.repository }}:{{ .Values.sideCar.tag }}"
+          imagePullPolicy: {{ .Values.sideCar.pullPolicy }}
+          env:
+          - name: Message
+            value: "Kube deployed"
+          - name: ServerIp
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "minecraft.fullname" . }}
+                key: ServerIp
+          - name: WorkspaceId
+            value: "95603f05-cda8-430b-aa97-45fb3ad20395"
+          - name: ServerPort
+            value: "25565"
+          - name: OmsSecret
+            value: "dHJ3bVh0Vy9NMUloM0xEaCtiMUdjWG5hT0pUcTlLMzRHdHRUejQ1dXhPMzZkQ3kzS1Bka0g1WDhpdVV4eTNMck9OeCtWaXpmWHovZnowRHFmdkMwUUE9PQ=="
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: {{ template "minecraft.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
