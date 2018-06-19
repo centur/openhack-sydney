@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using apicoreapp.Logic;
 using apicoreapp.Models;
 using k8s;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +13,20 @@ namespace apicoreapp.Controllers
     [ApiController]
     public class ContainerController : ControllerBase
     {
+        K8Commands _commands = new K8Commands();
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<Tenant>> Get()
+        public async Task<IEnumerable<Tenant>> Get()
         {
-            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            IKubernetes client = new Kubernetes(config);
+            return await _commands.GetServices();
 
-            var list = client.ListNamespacedPod("default");
-            var pod = list.Items[0];
+
 
             return new List<Tenant>();
         }
+
+      
 
         // GET api/values/5
         [HttpGet("{id}")]
