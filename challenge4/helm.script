@@ -1,0 +1,15 @@
+# Do these things once in image
+Helm init
+helm create minecraftdeployment
+[edit templates, values and deployment]
+
+# Not needed (just to check template)
+helm template minecraftdeployment -n minecraft5
+[validate]
+
+# Add a new pod called minecraft6
+helm upgrade --install mincraft6 .\minecraftdeployment
+
+
+# Delete a pod called minecraft6
+helm delete minecraft6 --purge

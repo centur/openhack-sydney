@@ -20,23 +20,41 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+          - containerPort: 25565
+            name: minecraft
+          - containerPort: 25575
+            name: rcon
+          env:
+          - name: EULA
+            value: "TRUE"
+          volumeMounts:
+          - mountPath: "/data"
+            name: volume
+        - name: "{{ .Release.Name }}-monitoring"
+          image: "{{ .Values.sideCar.repository }}:{{ .Values.sideCar.tag }}"
+          imagePullPolicy: {{ .Values.sideCar.pullPolicy }}
+          env:
+          - name: Message
+            value: "Kube deployed"
+          - name: ServerIp
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "minecraft.fullname" . }}
+                key: ServerIp
+          - name: WorkspaceId
+            value: "95603f05-cda8-430b-aa97-45fb3ad20395"
+          - name: ServerPort
+            value: "25565"
+          - name: OmsSecret
+            value: "dHJ3bVh0Vy9NMUloM0xEaCtiMUdjWG5hT0pUcTlLMzRHdHRUejQ1dXhPMzZkQ3kzS1Bka0g1WDhpdVV4eTNMck9OeCtWaXpmWHovZnowRHFmdkMwUUE9PQ=="
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: {{ template "minecraft.fullname" . }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
