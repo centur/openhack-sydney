@@ -42,11 +42,23 @@ spec:
         env:
         - name: Message
           value: "Kube deployed"
+        - name: ServerIp
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: ServerIp
+        - name: WorkspaceId
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: WorkspaceId
+        - name: ServerPort
+          value: 25565
         - name: OmsSecret
           valueFrom:
             secretKeyRef:
-              name: Secrets
-              key: omsSecret
+              name: secrets
+              key: omssecret2
       volumes:
       - name: volume
         persistentVolumeClaim:
@@ -68,26 +80,3 @@ spec:
 
   selector:
     app: minecraft
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: minecraft-sidecar
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: minecraft-sidecar
-    spec:
-      containers:
-      - name: mcmon
-        image: timh777/hack9-mcmon:v1
-        env:
-        - name: Message
-          value: "Kube deployed"
-        - name: OmsSecret
-          valueFrom:
-            secretKeyRef:
-              name: Secrets
-              key: omsSecret
