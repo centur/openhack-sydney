@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using apicoreapp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace apicoreapp.Controllers
 {
@@ -12,9 +15,15 @@ namespace apicoreapp.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<Monitor>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var HttpClient = new HttpClient();
+            HttpClient.BaseAddress = new Uri("https://mcapi.us");
+
+            var result = await HttpClient.GetAsync($"server/status?ip=13.70.127.199&port=25565");
+            string resultContent = await result.Content.ReadAsStringAsync();
+            var resultJson = JsonConvert.DeserializeObject<Monitor>(resultContent);
+            return resultJson;
         }
 
         // GET api/values/5
