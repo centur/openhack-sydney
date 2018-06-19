@@ -1,7 +1,7 @@
-﻿C:\Projects
+C:\Projects
 λ> az aks create --resource-group $kubeGroup --name $kubeName --enable-rbac --generate-ssh-keys `
 >> --enable-addons monitoring,http_application_routing `
 >> --workspace-resource-id $LogAnalyticsWorkspace
 The client 'hacker5@OTAPRD485ops.onmicrosoft.com' with object id 'fc4c0081-abb4-496c-a4a8-7d5969ba4041' has permission to perform action 'Microsoft.ContainerService/managedClusters/write' on scope '/subscriptions/c2552248-0156-478a-bb4a-e92bd9a238de/resourceGroups/hack9-kube/providers/Microsoft.ContainerService/managedClusters/hack9reborn'; however, it does not have permission to perform action 'Microsoft.OperationalInsights/workspaces/sharedkeys/read' on the linked scope(s) '/providers/Microsoft.OperationalInsights/workspaces/749d4947-6d30-48ec-ad37-8ecf0c3a3f82'.
 C:\Projects
-λ>fgdfgdf
+λ>
