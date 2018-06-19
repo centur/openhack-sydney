@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "minecraft.fullname" . }}
+  labels:
+    app: {{ template "minecraft.name" . }}
+    chart: {{ template "minecraft.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "minecraft.name" . }}
+    release: {{ .Release.Name }}
