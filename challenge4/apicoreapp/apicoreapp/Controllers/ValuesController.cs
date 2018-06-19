@@ -29,13 +29,47 @@ namespace apicoreapp.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<IEnumerable<Tenant>> Get(int id)
         {
             var config = KubernetesClientConfiguration.BuildConfigFromConfigFile("/app/config");
 
             IKubernetes client = new Kubernetes(config);
 
+            var tenants = new List<Tenant>();
             var list = client.ListNamespacedPod("default");
+            var svc = client.ListNamespacedService("default");
+            foreach (var service in svc.Items)
+            {
+                try
+                {
+                    var tenant = new Tenant();
+                    Console.WriteLine(service.Metadata.Name);
+                    var svcPort = service.Spec.Ports[0].TargetPort.Value.ToString();
+                    var svcExtIp = service.Status.LoadBalancer.Ingress[0].Ip.ToString();
+                    var rcPort = new string("");
+                    try
+                    {
+                        rcPort = service.Spec.Ports[1].TargetPort.Value.ToString();
+                    }
+                    catch (Exception)
+                    {
+
+                       // throw;
+                    }
+                    
+
+                    tenant.Name = service.Metadata.Name;
+                    tenant.Endpoints = new Endpoint { Minecraft = $"{svcExtIp}:{svcPort}", Rcon = $"{svcExtIp}:{rcPort}" };
+
+                    tenants.Add(tenant);
+                }
+                catch (Exception)
+                {
+
+                    //throw;
+                }
+
+            }
             var returnString = $"Pods{Environment.NewLine}";
             foreach (var item in list.Items)
             {
@@ -45,7 +79,7 @@ namespace apicoreapp.Controllers
             {
                 Console.WriteLine("Empty!");
             }
-            return returnString;
+            return tenants;
         }
 
         // POST api/values

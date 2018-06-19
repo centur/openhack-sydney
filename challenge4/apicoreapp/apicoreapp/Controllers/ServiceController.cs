@@ -11,22 +11,16 @@ namespace apicoreapp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContainerController : ControllerBase
+    public class ServiceController : ControllerBase
     {
         K8Commands _commands = new K8Commands();
 
         // GET api/values
         [HttpGet]
-        public async Task<IEnumerable<Tenant>> Get()
+        public async Task<IActionResult> List()
         {
-            return await _commands.GetServices();
-
-
-
-            return new List<Tenant>();
+            return Ok(await _commands.GetServices());
         }
-
-      
 
         // GET api/values/5
         [HttpGet("{id}")]
