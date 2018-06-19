@@ -42,42 +42,26 @@ namespace apicoreapp.Logic
 
             var items = result["items"];
 
+            var tenantList = new List<Tenant>();
+
             foreach(var item in result["items"])
             {
                 var name = item["metadata"]["name"];
           
                 var ip = item.SelectToken("status.loadBalancer.ingress[0].ip");
 
-                //var ports = item["spec"]["ports"];
+                var port = item.SelectToken("spec.ports[0].targetPort") ?? "";
+                var rmPort = item.SelectToken("spec.ports[1].targetPort") ?? "" ;
 
-               
-
-
-                //"spec": {
-                //    "clusterIP": "10.0.143.253",
-                //"externalTrafficPolicy": "Cluster",
-                //"ports": [
-                //    {
-                //        "name": "minecraft",
-                //        "nodePort": 31062,
-                //        "port": 25565,
-                //        "protocol": "TCP",
-                //        "targetPort": 25565
-                //    },
-                //    {
-                //        "name": "rm",
-                //        "nodePort": 32382,
-                //        "port": 25575,
-                //        "protocol": "TCP",
-                //        "targetPort": 25575
-                //    }
-                //],
-
-
+                tenantList.Add(new Tenant()
+                {
+                    Name = name.ToString(),
+                    Endpoints = new []{
+                        new Endpoint(){ Minecraft = $"{ip}:{port}", Rcon = $"{ip}:{port}" } }
+                });
             }
 
-            return null;
-
+            return Task.FromResult(tenantList.AsEnumerable());
         } 
 
     }
