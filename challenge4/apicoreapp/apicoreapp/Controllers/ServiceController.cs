@@ -14,6 +14,7 @@ namespace apicoreapp.Controllers
     public class ServiceController : ControllerBase
     {
         K8Commands _commands = new K8Commands();
+        IHelmCommands _helmCommands = new HelmCommands();
 
         // GET api/values
         [HttpGet]
@@ -31,20 +32,22 @@ namespace apicoreapp.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post()
         {
+            _helmCommands.CreateService($"minecraft{DateTime.Now.Ticks}");
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(string id, [FromBody] string value)
         {
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{name}")]
+        public void Delete(string name)
         {
+            _helmCommands.DeleteService(name);
         }
     }
 }
