@@ -23,7 +23,7 @@ namespace apicoreapp.Logic
 
     public class HelmCommands: IHelmCommands
     {
-        readonly string _createServiceCommand = @"upgrade --install {0} .\minecraft";
+        readonly string _createServiceCommand = @"upgrade --install {0} ./minecraft";
         readonly string _deleteServiceCommand = "delete {0}";
 
         readonly string _helmFile = "helm";
